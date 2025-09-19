@@ -10,5 +10,10 @@ public class Testar {
         c.adicionarItem(new Produto("Perfume Mulher"), 20);
 
         System.out.println(c.toString());
+        System.out.println("======================================");
+
+        c.retirarProdutoNoCatalogo(new Produto("Creme de Barbear"));
+        c.retirarProdutoNoCatalogo(new Produto("Perfume Mulher"));
+        System.out.println(c.toString());
     }
 }

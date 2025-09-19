@@ -34,6 +34,31 @@ public class Lista<T>{
         return null; 
     }
 
+    public boolean excluirItem(T item){
+        if(listaVazia()) return false; //não tem nada na lista, retorna falso, pois não excluiu nada.
+        
+        if (inicio.getItem().equals(item)){
+            inicio = inicio.getProx();
+            return true; //esse if é para caso o elemento a excluir, seja o inicio.
+        }
+
+        Bloco<T> itemAnteriorAoAlvo = inicio;
+        Bloco<T> itemAlvo = inicio.getProx();
+
+        while(itemAlvo != null){
+            if(itemAlvo.getItem().equals(item)){
+                itemAnteriorAoAlvo.setProx(itemAlvo.getProx());
+                return true; 
+                //nesse caso, ele exclui. ele manda coloca o ponteiro "prox" do itemAnteriorAoAlvo no ponteiro "prox" do itemAlvo.
+            }
+            itemAnteriorAoAlvo = itemAlvo;
+            itemAlvo = itemAlvo.getProx();
+        }
+
+        return false;
+        //eu não preciso "nullificar" o alvo da exclusão, pois o java já faz isso através do garbage collector. 
+    }
+
     public String toString() {
 
         StringBuffer sb = new StringBuffer();

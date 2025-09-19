@@ -1,3 +1,4 @@
+import clientes.Cliente;
 import listas.Lista;
 public class Catalogo {
     private Lista<NovoItem> catalogo = new Lista<NovoItem>();
@@ -15,6 +16,12 @@ public class Catalogo {
             NovoItem novoProduto = new NovoItem(produto, qtd); //caso não esteja no catálogo, ele será adicionado criando um novo bloco para ele.
             this.catalogo.insereFinal(novoProduto);
         }
+    }
+
+    public void retirarProdutoNoCatalogo(Produto produtoAlvo){
+        NovoItem alvo = new NovoItem(produtoAlvo, 0);
+        this.catalogo.excluirItem(alvo); 
+        //esse método serve apenas para retirar o produto inteiramente. ele não vai retirar um qtd específica, por exemplo.
     }
 
     @Override
