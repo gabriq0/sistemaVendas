@@ -6,7 +6,7 @@ public class ListaClientes {
 
     public void adicionarNovoCliente(String nome, String telefone, String endereco){
         Cliente novoCliente = new Cliente(nome, telefone, endereco);
-        Cliente checarClienteRecorrente = this.listadeClientes.checarLista(novoCliente);
+        Cliente checarClienteRecorrente = this.listadeClientes.compararItens(novoCliente);
 
         if(checarClienteRecorrente == null){
             this.listadeClientes.insereFinal(novoCliente);
