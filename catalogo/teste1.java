@@ -1,6 +1,6 @@
 package catalogo;
 
-public class Testar {
+public class teste1 {
     public static void main(String[] args) {
         Catalogo c = new Catalogo();
 
@@ -19,9 +19,5 @@ public class Testar {
         
         c.mostrarCatalogo();
         System.out.println("======================================");
-        
-        
-        c.reduzirQuantidadeDoProduto(new Produto("Hidratante Amor",  "P11", 20), 10);
-        c.mostrarCatalogo();
     }
 }

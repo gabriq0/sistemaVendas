@@ -83,6 +83,11 @@ public class Lista<T>{
         //outro, como é o caso do método "compararItens()"!
     }
 
+    public void limpaLista(){
+        this.inicio = null; //eu posso apenas excluir o primeiro bloco, o garbage collector faz o resto.
+        this.tamanho = 0;
+    }
+
     public String toString() {
         StringBuffer sbuffer = new StringBuffer();
         Bloco<T> auxiliar = this.inicio;

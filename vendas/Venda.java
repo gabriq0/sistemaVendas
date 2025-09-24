@@ -2,10 +2,28 @@ package vendas;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import catalogo.*;
+import clientes.*;
+import listas.*;
+
 
 public class Venda {
     private String idVenda;
     private String dataTransacao;
+    private Cliente cliente;
+    private Lista<ItemVenda> itensVendidos;
+    private double total;
+    private String formaPagamento;
+    private Catalogo catalogo;
+
+    public Venda(Cliente cliente, Catalogo catalogo, Lista<ItemVenda> itensVendidos){
+        this.idVenda = "V-" + getDataTransacao();
+        this.dataTransacao = getDataTransacao();
+        this.cliente = cliente;
+        this.itensVendidos = new Lista<ItemVenda>();
+        this.total = 0.0;
+        this.catalogo = catalogo;
+        this.itensVendidos = itensVendidos;
+    }
 
     public String getDataTransacao() {
         LocalDateTime horadeVenda = LocalDateTime.now();
@@ -16,6 +34,76 @@ public class Venda {
     public String getIdVenda(){
         return this.idVenda;
     }
+    public double getTotal(){
+        return this.total;
+    }
 
-    
+    public void adicionarItem(Produto produto, int quantidade) {
+        ItemVenda item = new ItemVenda(produto, quantidade);
+        this.itensVendidos.insereFinal(item);
+        this.total += item.getSubtotal();
+    }
+
+    public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir){
+        ItemVenda auxiliar = new ItemVenda(produtoAlvo, 0);
+        ItemVenda itemExiste = this.itensVendidos.compararItens(auxiliar);
+
+        if(itemExiste != null){
+            int quantidadeAnterior = itemExiste.getQuantidade();
+            int reducao = quantidadeAnterior - quantidadeParaReduzir;
+            if(reducao < 0) reducao = 0;
+            itemExiste.setQuantidade(reducao);
+        }
+        //isso é para caso seja necessário retirar um item da lista de compras. o equivalente de tirar um item do carrinho de compras.
+    }
+
+    public boolean finalizarVenda(String formaPagamento){
+        if(this.itensVendidos.listaVazia()){
+            System.out.println("nenhum item! venda cancelada.");
+            return false;
+        }
+
+        for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            ItemVenda item = this.itensVendidos.pegarBloco(i);
+            Produto produtoVendido = item.getItem();
+            int quantidadeVendida = item.getQuantidade();
+            
+            this.catalogo.retirarUnidade(produtoVendido, quantidadeVendida);
+            //esse loop é para tirar os itens comprados do estoque.
+        }
+
+        System.out.println("venda realizada com sucesso.");
+        gerarComprovante(formaPagamento);
+
+        this.itensVendidos.limpaLista(); //limpa a lista para poder usar depois se necessário.
+        return true;
+    }
+
+    public void gerarComprovante(String formaPagamento){
+        System.out.println("\n--- COMPROVANTE DE VENDA ---");
+        System.out.println("data/hora: " + getDataTransacao());
+        System.out.println("--------------------------");
+        
+        if (this.cliente != null) {
+            System.out.println("cliente: " + this.cliente.getNome() + " (" + cliente.getTelefone() + ")");
+        } else {
+            System.out.println("cliente: não tem");
+        }
+        System.out.println("--------------------------");
+
+        System.out.println("itens:");
+        for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            ItemVenda item = this.itensVendidos.pegarBloco(i);
+            System.out.printf("- %s (%d unidades) | R$ %.2f\n", 
+                              item.getItem().getNome(), 
+                              item.getQuantidade(), 
+                              item.getSubtotal());
+        }
+        
+        System.out.println("--------------------------");
+        System.out.printf("total: R$ %.2f\n", this.total);
+        System.out.println("forma de pagamento: " + formaPagamento);
+        System.out.println("--------------------------");
+    }
+
 }

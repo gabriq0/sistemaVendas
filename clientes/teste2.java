@@ -1,6 +1,6 @@
 package clientes;
 
-public class teste {
+public class teste2 {
     public static void main(String[] args) {
         ListaClientes li = new ListaClientes();
 

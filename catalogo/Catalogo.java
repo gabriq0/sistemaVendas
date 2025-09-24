@@ -39,7 +39,7 @@ public class Catalogo {
         return total;
     }
 
-    public void reduzirQuantidadeDoProduto(Produto produtoAlvo, int quantidadeParaReduzir){
+    public void retirarUnidade(Produto produtoAlvo, int quantidadeParaReduzir){
         ItemEstoque auxiliar = new ItemEstoque(produtoAlvo, 0);
         ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);
 
