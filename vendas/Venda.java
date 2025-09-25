@@ -1,22 +1,22 @@
 package vendas;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
 import listas.*;
 
-
 public class Venda {
     private String idVenda;
     private String dataTransacao;
-    private Cliente cliente;
-    private Lista<ItemVenda> itensVendidos;
-    private double total;
     private String formaPagamento;
+    private Cliente cliente;
+    private double total;
     private Catalogo catalogo;
+    private Lista<ItemVenda> itensVendidos;
 
     public Venda(Cliente cliente, Catalogo catalogo, Lista<ItemVenda> itensVendidos){
-        this.idVenda = "V-" + getDataTransacao();
+        this.idVenda = "V-" + LocalDateTime.now();
         this.dataTransacao = getDataTransacao();
         this.cliente = cliente;
         this.itensVendidos = new Lista<ItemVenda>();
@@ -27,13 +27,15 @@ public class Venda {
 
     public String getDataTransacao() {
         LocalDateTime horadeVenda = LocalDateTime.now();
-        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("hh:mm - dd/MM/yy");
+        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yy");
         dataTransacao = horadeVenda.format(estiloBrasil);
         return dataTransacao; //essa formatação está aí, pois o formato original é bem estranho/confuso.
     }
+
     public String getIdVenda(){
         return this.idVenda;
     }
+
     public double getTotal(){
         return this.total;
     }
@@ -57,26 +59,61 @@ public class Venda {
         //isso é para caso seja necessário retirar um item da lista de compras. o equivalente de tirar um item do carrinho de compras.
     }
 
-    public boolean finalizarVenda(String formaPagamento){
+    public boolean finalizarVenda(String formaPagamento, Entrega entrega){
         if(this.itensVendidos.listaVazia()){
             System.out.println("nenhum item! venda cancelada.");
             return false;
         }
+
+        Lista<Pedido> pedidosPendentes = new Lista<>();
+
+        System.out.println("\n--- CHECANDO ESTOQUE ---");
 
         for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
             ItemVenda item = this.itensVendidos.pegarBloco(i);
             Produto produtoVendido = item.getItem();
             int quantidadeVendida = item.getQuantidade();
             
-            this.catalogo.retirarUnidade(produtoVendido, quantidadeVendida);
-            //esse loop é para tirar os itens comprados do estoque.
+            int falta = this.catalogo.verificarFalta(produtoVendido, quantidadeVendida);
+            
+            if(falta > 0){
+                
+                Pedido novoPedido = new Pedido(produtoVendido, falta);
+                pedidosPendentes.insereFinal(novoPedido);
+                
+                System.out.println(produtoVendido.getNome() + " em falta no catalogo. pedido de compra realizado!");
+
+                //caso não tenha itens para finalizar, ele vai adicionar à lista de pedidos pendentes.
+            } 
         }
 
-        System.out.println("venda realizada com sucesso.");
+        boolean teveFalta = pedidosPendentes.tamanhoLista() > 0;
+
+        if (teveFalta) {
+            System.out.println("\n--- ENTREGA ACIONADA ---");
+        
+            for (int i = 0; i < pedidosPendentes.tamanhoLista(); i++) {
+            Pedido pedidos = pedidosPendentes.pegarBloco(i);
+            entrega.realizarEntrega(this, pedidos);
+            }
+            //se teve falta, o pedido vai ser realizado, e posteriormente, entregado ao cliente.
+        }
+        else {
+            this.concluirAtendimento(catalogo);
+        }
         gerarComprovante(formaPagamento);
 
         this.itensVendidos.limpaLista(); //limpa a lista para poder usar depois se necessário.
         return true;
+    }
+
+    public void concluirAtendimento(Catalogo catalogo) {
+        for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            ItemVenda item = this.itensVendidos.pegarBloco(i);
+            
+            catalogo.reduzirParaVenda(item.getItem(), item.getQuantidade()); 
+        }
+        //vai ser chamado para concluir as vendas pendentes.
     }
 
     public void gerarComprovante(String formaPagamento){
@@ -85,7 +122,7 @@ public class Venda {
         System.out.println("--------------------------");
         
         if (this.cliente != null) {
-            System.out.println("cliente: " + this.cliente.getNome() + " (" + cliente.getTelefone() + ")");
+            System.out.println("cliente: " + this.cliente.getNome() + " (" + cliente.getEmail() + ")");
         } else {
             System.out.println("cliente: não tem");
         }

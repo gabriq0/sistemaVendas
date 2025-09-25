@@ -1,20 +1,20 @@
 package clientes;
 public class Cliente{
     private String nome;
-    private String telefone;
+    private String email;
     private String endereco;
 
-    public Cliente(String nome, String telefone, String endereco){
+    public Cliente(String nome, String email, String endereco){
         this.nome = nome;
-        this.telefone = telefone;
+        this.email = email;
         this.endereco = endereco;
     }
 
     public String getNome(){
         return this.nome;
     }
-    public String getTelefone(){
-        return this.telefone;
+    public String getEmail(){
+        return this.email;
     }
     public String getEndereco(){
         return this.endereco;
@@ -22,7 +22,7 @@ public class Cliente{
 
     @Override
     public String toString(){
-        return "Nome: " + this.nome + " - " + this.telefone + "\n" + "Endereço: " + this.endereco + "\n";
+        return "Nome: " + this.nome + " - " + this.email + "\n" + "Endereço: " + this.endereco + "\n";
     }
     
     @Override
@@ -31,6 +31,6 @@ public class Cliente{
         if(objeto == null) return false;
 
         Cliente clienteBusca = (Cliente) objeto;
-        return this.telefone.equals(clienteBusca.telefone);
+        return this.email.equals(clienteBusca.email);
     }
 }

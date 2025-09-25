@@ -39,7 +39,7 @@ public class Catalogo {
         return total;
     }
 
-    public void retirarUnidade(Produto produtoAlvo, int quantidadeParaReduzir){
+    public void reduzirAjusteManual(Produto produtoAlvo, int quantidadeParaReduzir){
         ItemEstoque auxiliar = new ItemEstoque(produtoAlvo, 0);
         ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);
 
@@ -49,6 +49,36 @@ public class Catalogo {
             if(reducao < 0) reducao = 0;
             itemExiste.setQuantidadeEstoque(reducao);
         }
+        //esse método é para apenas retirar uma quantidade desejada de um item no estoque.
+    }
+
+    public boolean reduzirParaVenda(Produto produtoAlvo, int quantidadeParaReduzir){
+        int falta = verificarFalta(produtoAlvo, quantidadeParaReduzir);
+        if(falta > 0) return false; //se o item está faltando não dá pra reduzir.
+
+        ItemEstoque auxiliar = new ItemEstoque(produtoAlvo, 0);
+        ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);
+    
+        if (itemExiste != null) {
+            int quantidadeAnterior = itemExiste.getQuantidadeEstoque();
+            itemExiste.setQuantidadeEstoque(quantidadeAnterior - quantidadeParaReduzir);
+            return true;
+        }
+        return false;
+    }
+
+    public int verificarFalta(Produto produtoAlvo, int quantidadeDesejada){
+        ItemEstoque auxiliar = new ItemEstoque(produtoAlvo, 0);
+        ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);
+
+        if(itemExiste != null){
+            int quantidadeAtual = itemExiste.getQuantidadeEstoque();
+            
+            if(quantidadeAtual >= quantidadeDesejada) return 0; //retorna zero, pois não está em falta.
+            else return quantidadeDesejada - quantidadeAtual; //retorna quantos itens faltam para chegar a qtd desejada.
+        }
+
+        return quantidadeDesejada; //se o item não existe, falta tudo. 
     }
 
     @Override
