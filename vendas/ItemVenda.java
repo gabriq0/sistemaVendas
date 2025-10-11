@@ -12,13 +12,13 @@ public class ItemVenda {
         this.subtotal = item.getValordeVenda() * quantidade;
     }
 
-    public Produto getItem(){
-        return this.item;
-    }
     public void setQuantidade(int quantidade){
         this.quantidade = quantidade;
     }
 
+    public Produto getItem(){
+        return this.item;
+    }
     public int getQuantidade(){
         return this.quantidade;
     }
@@ -28,7 +28,7 @@ public class ItemVenda {
 
     @Override
     public String toString(){
-        return "nome: " + item.getNome() + "(" + getQuantidade() + ") = R$ " + getSubtotal();
+        return "nome: " + item.getNome() + "(" + getQuantidade() + ") | R$ " + getSubtotal();
     }
 
     @Override

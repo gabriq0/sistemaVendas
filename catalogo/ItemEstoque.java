@@ -9,16 +9,15 @@ public class ItemEstoque {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
+    public void setQuantidadeEstoque(int quantidadeEstoque){
+        this.quantidadeEstoque = quantidadeEstoque;
+    }
+
     public Produto getProduto(){
         return this.produto;
     }
-    
     public int getQuantidadeEstoque(){
         return this.quantidadeEstoque;
-    }
-
-    public void setQuantidadeEstoque(int quantidadeEstoque){
-        this.quantidadeEstoque = quantidadeEstoque;
     }
 
     @Override

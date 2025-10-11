@@ -19,19 +19,22 @@ public class Pedido {
         this.concluido = false;
     }
 
-    public String getDataPedido() {
-        LocalDateTime horadeVenda = LocalDateTime.now();
-        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("hh:mm - dd/MM/yy");
-        dataPedido = horadeVenda.format(estiloBrasil);
-        return dataPedido; //essa formatação está aí, pois o formato original é bem estranho/confuso.
-    }
-
-    public void concluirPedido(Catalogo catalogo) {
+    public void concluirPedido(Catalogo catalogo){
         if (!this.concluido) {
             catalogo.adicionarProduto(this.produto, this.quantidadePedida);
             this.concluido = true;
             System.out.println("pedido concluído! " + produto.getNome() + "(" + quantidadePedida + " unidades adicionadas ao estoque)");
             System.out.println("-----------------------");
         }
+    }
+
+    public String getDataPedido(){
+        LocalDateTime horadeVenda = LocalDateTime.now();
+        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("hh:mm - dd/MM/yy");
+        dataPedido = horadeVenda.format(estiloBrasil);
+        return dataPedido; //essa formatação está aí, pois o formato original é bem estranho/confuso.
+    }
+    public int getQuantidadePedida(){
+        return quantidadePedida;
     }
 }

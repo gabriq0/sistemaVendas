@@ -10,6 +10,7 @@ public class Produto {
         this.idProduto = idProduto;
         this.valordeVenda = valordeVenda;
     }
+    
     public String getNome(){
         return this.nome;
     }

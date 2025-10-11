@@ -25,21 +25,6 @@ public class Venda {
         this.itensVendidos = itensVendidos;
     }
 
-    public String getDataTransacao() {
-        LocalDateTime horadeVenda = LocalDateTime.now();
-        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yy");
-        dataTransacao = horadeVenda.format(estiloBrasil);
-        return dataTransacao; //essa formatação está aí, pois o formato original é bem estranho/confuso.
-    }
-
-    public String getIdVenda(){
-        return this.idVenda;
-    }
-
-    public double getTotal(){
-        return this.total;
-    }
-
     public void adicionarItem(Produto produto, int quantidade) {
         ItemVenda item = new ItemVenda(produto, quantidade);
         this.itensVendidos.insereFinal(item);
@@ -143,4 +128,20 @@ public class Venda {
         System.out.println("--------------------------");
     }
 
+
+    public String getIdVenda(){
+        return this.idVenda;
+    }
+    public String getDataTransacao(){
+        LocalDateTime horadeVenda = LocalDateTime.now();
+        DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yy");
+        dataTransacao = horadeVenda.format(estiloBrasil);
+        return dataTransacao; //essa formatação está aí, pois o formato original é bem estranho/confuso.
+    }
+    public String getFormaPagamento(){
+        return formaPagamento;
+    }
+    public double getTotal(){
+        return this.total;
+    }
 }
