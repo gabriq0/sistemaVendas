@@ -1,11 +1,12 @@
-package catalogo;
-
+package logistica;
+import catalogo.ItemEstoque;
+import catalogo.Produto;
 import listas.Lista;
 
 public class Catalogo {
     private Lista<ItemEstoque> catalogo = new Lista<ItemEstoque>();
 
-    public void adicionarProduto(Produto produto, int quantidadeEstoque){
+    void adicionarProduto(Produto produto, int quantidadeEstoque){
         ItemEstoque auxiliar = new ItemEstoque(produto, 0);
         ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);  
         //cria dois itens para comparar/checar se o novoProduto recebido pelo método, já existe na lista.
@@ -27,6 +28,7 @@ public class Catalogo {
     }
 
     public void mostrarCatalogo(){
+        if(this.catalogo.listaVazia()) System.out.println("catalogo de produtos vazio!!");
         System.out.println(this.catalogo.toString());
     }
 
@@ -80,6 +82,8 @@ public class Catalogo {
 
         return quantidadeDesejada; //se o item não existe, falta tudo. 
     }
+
+    public int getTamanhoCatalogo(){ return this.catalogo.tamanhoLista(); }
 
     @Override
     public String toString() {

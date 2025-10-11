@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
 import listas.*;
+import logistica.Catalogo;
+import logistica.ServicoReposicao;
 
 public class Venda {
     private String idVenda;
@@ -12,17 +14,19 @@ public class Venda {
     private String formaPagamento;
     private Cliente cliente;
     private double total;
-    private Catalogo catalogo;
+    private Catalogo catalogoVendedor;
     private Lista<ItemVenda> itensVendidos;
+    private ServicoReposicao servicoReposicao;
 
-    public Venda(Cliente cliente, Catalogo catalogo, Lista<ItemVenda> itensVendidos){
+    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, ServicoReposicao servicoReposicao){
         this.idVenda = "V-" + LocalDateTime.now();
         this.dataTransacao = getDataTransacao();
         this.cliente = cliente;
         this.itensVendidos = new Lista<ItemVenda>();
         this.total = 0.0;
-        this.catalogo = catalogo;
+        this.catalogoVendedor = catalogoVendedor;
         this.itensVendidos = itensVendidos;
+        this.servicoReposicao = servicoReposicao;
     }
 
     public void adicionarItem(Produto produto, int quantidade) {
@@ -44,51 +48,63 @@ public class Venda {
         //isso é para caso seja necessário retirar um item da lista de compras. o equivalente de tirar um item do carrinho de compras.
     }
 
-    public boolean finalizarVenda(String formaPagamento, Entrega entrega){
+    public boolean finalizarVenda(String formaPagamento){
         if(this.itensVendidos.listaVazia()){
             System.out.println("nenhum item! venda cancelada.");
             return false;
         }
 
-        Lista<Pedido> pedidosPendentes = new Lista<>();
+        System.out.println("finalizando a venda: " + getIdVenda());
+        System.out.println("\n\n--- CHECANDO ESTOQUE ---");
 
-        System.out.println("\n--- CHECANDO ESTOQUE ---");
+        boolean precisaReposicao = false;
 
         for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            
             ItemVenda item = this.itensVendidos.pegarBloco(i);
             Produto produtoVendido = item.getItem();
             int quantidadeVendida = item.getQuantidade();
             
-            int falta = this.catalogo.verificarFalta(produtoVendido, quantidadeVendida);
+            int falta = this.catalogoVendedor.verificarFalta(produtoVendido, quantidadeVendida);
             
             if(falta > 0){
-                
-                Pedido novoPedido = new Pedido(produtoVendido, falta);
-                pedidosPendentes.insereFinal(novoPedido);
-                
                 System.out.println(produtoVendido.getNome() + " em falta no catalogo. pedido de compra realizado!");
-
-                //caso não tenha itens para finalizar, ele vai adicionar à lista de pedidos pendentes.
+                precisaReposicao = true;
+                break;
             } 
         }
 
-        boolean teveFalta = pedidosPendentes.tamanhoLista() > 0;
+        if (precisaReposicao) {
+            System.out.println("\n--- pedido de reposição automática realizado ---");
+            boolean reposicaoSucesso = true;
 
-        if (teveFalta) {
-            System.out.println("\n--- ENTREGA ACIONADA ---");
-        
-            for (int i = 0; i < pedidosPendentes.tamanhoLista(); i++) {
-            Pedido pedidos = pedidosPendentes.pegarBloco(i);
-            entrega.realizarEntrega(this, pedidos);
+            for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            
+                ItemVenda item = this.itensVendidos.pegarBloco(i);
+                Produto produtoParaRepor = item.getItem();
+                int quantidadeVendida = item.getQuantidade();
+                int falta = this.catalogoVendedor.verificarFalta(produtoParaRepor, quantidadeVendida);
+            
+                this.servicoReposicao.comprardoProdutor(produtoParaRepor, (falta+5));
+
+                if(falta > 0){
+                    
+                    if(!this.servicoReposicao.comprardoProdutor(produtoParaRepor, (falta+5))){
+                        reposicaoSucesso = false;
+                        System.out.println("venda cancelada: não foi possível repor o catalogo do vendedor.");
+                        this.itensVendidos.limpaLista();
+                        return false;
+                    }                 
+                } 
             }
-            //se teve falta, o pedido vai ser realizado, e posteriormente, entregado ao cliente.
         }
-        else {
-            this.concluirAtendimento(catalogo);
-        }
-        gerarComprovante(formaPagamento);
 
-        this.itensVendidos.limpaLista(); //limpa a lista para poder usar depois se necessário.
+        else {
+            this.concluirAtendimento(catalogoVendedor);
+        }
+        
+        gerarComprovante(formaPagamento);
+        this.itensVendidos.limpaLista();
         return true;
     }
 
