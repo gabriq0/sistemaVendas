@@ -11,14 +11,15 @@ public class Produto {
         this.nome = nome;
         this.idProduto = idProduto;
         this.valordeVenda = valordeVenda;
-        this.receita = null; //esse construtor é apenas para produtos comprados / revendidos. não precisa de receita
+        this.receita = null; 
+        //esse construtor é apenas para produtos que não precisam de receita... talvez eu remova depois
     }
-
     public Produto(String nome, String idProduto, double valordeVenda, Receita receita){
         this.nome = nome;
         this.idProduto = idProduto;
         this.valordeVenda = valordeVenda;
-        this.receita = receita; //esse construtor é para os itens que serão produzidos, precisa de receita para criá-los.
+        this.receita = receita; 
+        //esse construtor é para os itens que serão produzidos, precisa de receita para criá-los.
     }
     
     public String getNome(){ return this.nome; }
@@ -27,9 +28,7 @@ public class Produto {
     public Receita getReceita() { return receita; }
 
     @Override
-    public String toString(){ 
-        return this.nome; 
-    }
+    public String toString(){ return this.nome; }
 
     @Override
     public boolean equals(Object objeto){

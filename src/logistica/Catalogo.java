@@ -83,7 +83,7 @@ public class Catalogo {
         return quantidadeDesejada; //se o item não existe, falta tudo. 
     }
 
-    public int getTamanhoCatalogo(){ return this.catalogo.tamanhoLista(); }
+    public int getTamanhoCatalogo() { return this.catalogo.tamanhoLista(); }
 
     @Override
     public String toString() {

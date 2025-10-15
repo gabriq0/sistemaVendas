@@ -1,6 +1,8 @@
 package clientes;
 import listas.Lista;
 
+//minha intenção é melhorar a relação / uso da classe cliente no futuro...
+
 public class ListaClientes {
     private Lista<Cliente> listadeClientes = new Lista<Cliente>();
 
@@ -20,7 +22,5 @@ public class ListaClientes {
     }
 
     @Override
-    public String toString() {
-        return this.listadeClientes.toString();
-    }
+    public String toString() { return this.listadeClientes.toString(); }
 }

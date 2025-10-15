@@ -3,19 +3,10 @@ public class Bloco<T> {
     private T item;
     private Bloco<T> prox;
 
-    public void setItem(T item){
-        this.item = item;
-    }
-    public T getItem(){
-        return this.item;
-    }
-
-    public void setProx(Bloco<T> prox){
-        this.prox = prox;
-    }
-    public Bloco<T> getProx(){
-        return this.prox;
-    }
+    public void setItem(T item){ this.item = item; }
+    public void setProx(Bloco<T> prox) { this.prox = prox; }
+    public T getItem() { return this.item; }
+    public Bloco<T> getProx() { return this.prox; }
 
     public boolean isUltimo(){
         if(this.prox == null) return true;
@@ -23,9 +14,7 @@ public class Bloco<T> {
     }
 
     @Override
-    public String toString() {
-        return this.item.toString();
-    }
+    public String toString() { return this.item.toString(); }
 
     @Override
     public boolean equals(Object objeto){

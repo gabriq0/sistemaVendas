@@ -3,9 +3,7 @@ public class Lista<T>{
     private Bloco<T> inicio;
     private int tamanho=0;
 
-    public int tamanhoLista(){
-        return this.tamanho;
-    }
+    public int tamanhoLista() { return this.tamanho; }
 
     public void insereFinal(T item){
         Bloco<T> novoItem = new Bloco<T>();
@@ -34,9 +32,9 @@ public class Lista<T>{
 
     public T compararItens(T item){
         Bloco<T> busca = inicio;
+        
         while(busca != null){
-            if(busca.getItem().equals(item)) return busca.getItem();
-            
+            if(busca.getItem().equals(item)) return busca.getItem();    
             busca = busca.getProx();
         }
 

@@ -10,19 +10,13 @@ public class Cliente{
         this.endereco = endereco;
     }
 
-    public String getNome(){
-        return this.nome;
-    }
-    public String getEmail(){
-        return this.email;
-    }
-    public String getEndereco(){
-        return this.endereco;
-    }
+    public String getNome() { return this.nome; }
+    public String getEmail() { return this.email; }
+    public String getEndereco() { return this.endereco; }
 
     @Override
     public String toString(){
-        return "Nome: " + this.nome + " - " + this.email + "\n" + "Endereço: " + this.endereco + "\n";
+        return "nome: " + this.nome + " (" + this.email + ")\n" + "endereço: " + this.endereco + "\n";
     }
     
     @Override

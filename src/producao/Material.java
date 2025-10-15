@@ -1,26 +1,26 @@
 package producao;
-public class Insumo {
-    private String idInsumo;
+public class Material {
+    private String idMaterial;
     private String nome;
     private String medida;
 
-    public Insumo(String idInsumo, String nome, String medida){
-        this.idInsumo = idInsumo;
+    public Material(String idMaterial, String nome, String medida){
+        this.idMaterial = idMaterial;
         this.nome = nome;
         this.medida = medida;
     }
 
-    public void setIdInsumo(String idInsumo) { this.idInsumo = idInsumo; }
+    public void setIdMaterial(String idMaterial) { this.idMaterial = idMaterial; }
     public void setNome(String nome) { this.nome = nome; }
     public void setMedida(String medida) { this.medida = medida;}
 
-    public String getIdInsumo() { return idInsumo; }
+    public String getIdMaterial() { return idMaterial; }
     public String getMedida() { return medida; }
     public String getNome() { return nome; }
 
     @Override
     public String toString() {
-        return "Insumo: " + this.nome + " (" + this.idInsumo + ")";
+        return this.nome + " (" + this.idMaterial + ")";
     }
 
     @Override
@@ -28,8 +28,8 @@ public class Insumo {
         if (this == objeto) return true;
         if (objeto == null) return false;
         
-        Insumo itemInsumo = (Insumo) objeto;
-        return this.idInsumo.equals(itemInsumo.idInsumo);
+        Material itemMaterial = (Material) objeto;
+        return this.idMaterial.equals(itemMaterial.idMaterial);
     }
 
 }

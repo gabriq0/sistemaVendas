@@ -9,20 +9,13 @@ public class ItemEstoque {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
-    public void setQuantidadeEstoque(int quantidadeEstoque){
-        this.quantidadeEstoque = quantidadeEstoque;
-    }
-
-    public Produto getProduto(){
-        return this.produto;
-    }
-    public int getQuantidadeEstoque(){
-        return this.quantidadeEstoque;
-    }
+    public void setQuantidadeEstoque(int quantidadeEstoque) { this.quantidadeEstoque = quantidadeEstoque; }
+    public Produto getProduto() { return this.produto; }
+    public int getQuantidadeEstoque() { return this.quantidadeEstoque; }
 
     @Override
     public String toString() {
-        return "Nome: " + this.produto.getNome() + " ("+ this.produto.getIdProduto() + ") - qtd: " +
+        return this.produto.getNome() + " ("+ this.produto.getIdProduto() + ") - qtd: " +
         this.quantidadeEstoque +"\nR$ " + this.produto.getValordeVenda();
     }
 

@@ -1,19 +1,19 @@
 package producao;
 public class ItemReceita{
-    private Insumo insumo;
+    private Material material;
     private double quantidadeNecessaria;
 
-    public ItemReceita(Insumo insumo, double quantidadeNecessaria){
-        this.insumo = insumo;
+    public ItemReceita(Material material, double quantidadeNecessaria){
+        this.material = material;
         this.quantidadeNecessaria = quantidadeNecessaria;
     }
 
-    public Insumo getInsumo() { return insumo; }
+    public Material getMaterial() { return material; }
     public double getQuantidadeNecessaria() { return quantidadeNecessaria; }
 
     @Override
     public String toString() {
-        return insumo.getNome() + " (quantidade: " + this.quantidadeNecessaria + " " + insumo.getMedida() + ")";
+        return material.getNome() + " (quantidade: " + this.quantidadeNecessaria + " " + material.getMedida() + ")";
     }
 
     @Override
@@ -22,6 +22,6 @@ public class ItemReceita{
         if (objeto == null) return false;
         
         ItemReceita itemBusca = (ItemReceita) objeto;
-        return this.insumo.equals(itemBusca.insumo);
+        return this.material.equals(itemBusca.material);
     }
 }
