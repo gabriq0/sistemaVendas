@@ -4,27 +4,21 @@ import catalogo.*;
 public class ItemVenda {
     private Produto item;
     private int quantidade;
+    private double precoVenda;
     private double subtotal;
 
-    public ItemVenda(Produto item, int quantidade){
+    public ItemVenda(Produto item, int quantidade, double precoVenda){
         this.item = item;
         this.quantidade = quantidade;
-        this.subtotal = item.getValordeVenda() * quantidade;
+        this.precoVenda = precoVenda;
+        this.subtotal = precoVenda * quantidade;
     }
 
-    public void setQuantidade(int quantidade){
-        this.quantidade = quantidade;
-    }
-
-    public Produto getItem(){
-        return this.item;
-    }
-    public int getQuantidade(){
-        return this.quantidade;
-    }
-    public double getSubtotal(){
-        return this.subtotal;
-    }
+    public void setQuantidade(int quantidade){ this.quantidade = quantidade; }
+    public double getPrecoVenda() { return precoVenda; }
+    public Produto getItem() { return this.item; }
+    public int getQuantidade() { return this.quantidade; }
+    public double getSubtotal() { return this.subtotal; }
 
     @Override
     public String toString(){

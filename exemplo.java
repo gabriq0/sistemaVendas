@@ -10,13 +10,15 @@ public class exemplo {
         // 1. produtor / fornecedor:
         EstoqueMaterial estoqueMaterial = new EstoqueMaterial();
         Catalogo catalogoProdutor = new Catalogo();
-        ServicoProducao servicoProducao = new ServicoProducao(estoqueMaterial, catalogoProdutor);
+        TabelaPreco tabelaProdutor = new TabelaPreco();
+        ServicoProducao servicoProducao = new ServicoProducao(estoqueMaterial, catalogoProdutor, tabelaProdutor);
  
         // 2. vendedor:
         Catalogo catalogoVendedor = new Catalogo();
+        TabelaPreco tabelaVendedor = new TabelaPreco();
         
         // 3. reposição para o vendedor / carrinho para o cliente:
-        ServicoReposicao servicoReposicao = new ServicoReposicao(catalogoProdutor, catalogoVendedor);
+        ServicoReposicao servicoReposicao = new ServicoReposicao(catalogoProdutor, catalogoVendedor, tabelaProdutor, tabelaVendedor);
         Lista<ItemVenda> carrinhoCompras = new Lista<ItemVenda>();
 
         // =================================================================================
@@ -29,13 +31,13 @@ public class exemplo {
         receitaPerfume.adicionarIngredienteReceita(alcool, 70.0);
         receitaPerfume.adicionarIngredienteReceita(essencia, 15.0);
 
-        Produto perfumeLavanda = new Produto("perfume lavanda", "pr01", 12.50, receitaPerfume);
+        Produto perfumeLavanda = new Produto("perfume lavanda", "pr01", receitaPerfume);
 
         // =================================================================================
 
         // 5. tentando criar um produto sem ter materiais para isso:
         System.out.println("teste para checar se é possível criar um produto sem material suficiente: \n");
-        boolean teste = servicoProducao.produzir(perfumeLavanda, 5);
+        boolean teste = servicoProducao.produzir(perfumeLavanda, 5, 25);
         
         System.out.println("\nqtd de material em estoque: " + estoqueMaterial.getTamanhoEstoque());
 
@@ -50,7 +52,7 @@ public class exemplo {
         estoqueMaterial.adicionarMaterial(essencia, 500.0);
         System.out.println(estoqueMaterial);
 
-        boolean correto = servicoProducao.produzir(perfumeLavanda, 10);
+        boolean correto = servicoProducao.produzir(perfumeLavanda, 10, 25);
 
         if (correto) System.out.println("produto adicionado ao catalogo do produtor com sucesso!");
         else System.out.println("falha, erro de código/lógica");
@@ -75,7 +77,7 @@ public class exemplo {
         
         Cliente cliente = new Cliente("gabriel", "gabri@yahoo.com", "beira do rio");
         
-        Venda venda = new Venda(cliente, catalogoVendedor, carrinhoCompras, servicoReposicao);
+        Venda venda = new Venda(cliente, catalogoVendedor, carrinhoCompras, servicoReposicao, tabelaVendedor);
         venda.adicionarItem(perfumeLavanda, 3);
         venda.finalizarVenda("pix");
         

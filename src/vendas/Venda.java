@@ -5,8 +5,7 @@ import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
 import listas.*;
-import logistica.Catalogo;
-import logistica.ServicoReposicao;
+import logistica.*;
 
 public class Venda {
     private String idVenda;
@@ -17,8 +16,9 @@ public class Venda {
     private Catalogo catalogoVendedor;
     private Lista<ItemVenda> itensVendidos;
     private ServicoReposicao servicoReposicao;
+    private TabelaPreco tabelaVendedor;
 
-    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, ServicoReposicao servicoReposicao){
+    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, ServicoReposicao servicoReposicao, TabelaPreco tabelaVendedor){
         this.idVenda = "V-" + LocalDateTime.now();
         this.dataTransacao = getDataTransacao();
         this.cliente = cliente;
@@ -26,17 +26,20 @@ public class Venda {
         this.total = 0.0;
         this.catalogoVendedor = catalogoVendedor;
         this.itensVendidos = itensVendidos;
+        this.tabelaVendedor = tabelaVendedor;
         this.servicoReposicao = servicoReposicao;
     }
 
     public void adicionarItem(Produto produto, int quantidade) {
-        ItemVenda item = new ItemVenda(produto, quantidade);
+        double precoVenda = this.tabelaVendedor.getPreco(produto);
+        ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
+        
         this.itensVendidos.insereFinal(item);
         this.total += item.getSubtotal();
     }
 
     public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir){
-        ItemVenda auxiliar = new ItemVenda(produtoAlvo, 0);
+        ItemVenda auxiliar = new ItemVenda(produtoAlvo, 0, 0);
         ItemVenda itemExiste = this.itensVendidos.compararItens(auxiliar);
 
         if(itemExiste != null){

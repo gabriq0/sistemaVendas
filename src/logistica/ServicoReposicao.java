@@ -1,14 +1,19 @@
 package logistica;
 
 import catalogo.Produto;
+import logistica.TabelaPreco;
 
 public class ServicoReposicao {
     private Catalogo cProdutor;
     private Catalogo cVendedor;
+    private TabelaPreco tabProdutor;
+    private TabelaPreco tabVendedor;
 
-    public ServicoReposicao(Catalogo cProdutor, Catalogo cVendedor){
+    public ServicoReposicao(Catalogo cProdutor, Catalogo cVendedor, TabelaPreco tabProdutor, TabelaPreco tabVendedor){
         this.cProdutor = cProdutor;
         this.cVendedor = cVendedor;
+        this.tabProdutor = tabProdutor;
+        this.tabVendedor = tabVendedor;
     }
 
     public boolean comprardoProdutor(Produto produto, int quantidade){
@@ -20,8 +25,16 @@ public class ServicoReposicao {
             return false;
         }
 
-        cProdutor.reduzirParaVenda(produto, quantidade);
-        cVendedor.adicionarProduto(produto, quantidade);
+        double precoProdutor = this.tabProdutor.getPreco(produto);
+        //isso aqui provavelmente só vai ser usado no futuro.
+
+        this.cProdutor.reduzirParaVenda(produto, quantidade);
+        this.cVendedor.adicionarProduto(produto, quantidade);
+
+        double precoVendedor = this.tabProdutor.getPreco(produto) + 10; //isso é um teste mal-implementado! 
+
+        this.tabVendedor.definirPreco(produto, precoVendedor);
+
         System.out.println("sucesso! vendedor abasteceu o seu estoque com o produto");
         return true;
     }
