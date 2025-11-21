@@ -6,8 +6,8 @@ import listas.Lista;
 public class ListaClientes {
     private Lista<Cliente> listadeClientes = new Lista<Cliente>();
 
-    public void adicionarNovoCliente(String nome, String telefone, String endereco){
-        Cliente novoCliente = new Cliente(nome, telefone, endereco);
+    public void adicionarNovoCliente(String nome, String email, String endereco){
+        Cliente novoCliente = new Cliente(nome, email, endereco);
         Cliente checarClienteRecorrente = this.listadeClientes.compararItens(novoCliente);
 
         if(checarClienteRecorrente == null){
@@ -15,8 +15,8 @@ public class ListaClientes {
         }
     }
 
-    public void removerClienteDaLista(String telefoneAlvo){
-        Cliente clienteAlvo = new Cliente(null, telefoneAlvo, null);
+    public void removerClienteDaLista(String email){
+        Cliente clienteAlvo = new Cliente(null, email, null);
         this.listadeClientes.excluirItem(clienteAlvo);
 
     }
