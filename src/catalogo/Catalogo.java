@@ -1,12 +1,10 @@
-package logistica;
-import catalogo.ItemEstoque;
-import catalogo.Produto;
+package catalogo;
 import listas.Lista;
 
 public class Catalogo {
     private Lista<ItemEstoque> catalogo = new Lista<ItemEstoque>();
 
-    void adicionarProduto(Produto produto, int quantidadeEstoque){
+    public boolean adicionarProduto(Produto produto, int quantidadeEstoque){
         ItemEstoque auxiliar = new ItemEstoque(produto, 0);
         ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);  
         //cria dois itens para comparar/checar se o novoProduto recebido pelo método, já existe na lista.
@@ -14,10 +12,12 @@ public class Catalogo {
         if(itemExiste != null){
             int quantidadeAnterior = itemExiste.getQuantidadeEstoque(); //se o produto já está na lista, ele vai somar a nova quantidade adicionada com a anterior.
             itemExiste.setQuantidadeEstoque(quantidadeAnterior + quantidadeEstoque);
+            return true;
         }
         else{
             ItemEstoque novoProduto = new ItemEstoque(produto, quantidadeEstoque); //caso não esteja no catálogo, ele será adicionado criando um novo bloco para ele.
             this.catalogo.insereFinal(novoProduto);
+            return true;
         }
     }
 

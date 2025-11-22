@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
 import listas.*;
-import logistica.*;
 
 public class Venda {
     private String idVenda;
@@ -15,10 +14,9 @@ public class Venda {
     private double total;
     private Catalogo catalogoVendedor;
     private Lista<ItemVenda> itensVendidos;
-    private ServicoReposicao servicoReposicao;
     private TabelaPreco tabelaVendedor;
 
-    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, ServicoReposicao servicoReposicao, TabelaPreco tabelaVendedor){
+    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, TabelaPreco tabelaVendedor){
         this.idVenda = "V-" + LocalDateTime.now();
         this.dataTransacao = getDataTransacao();
         this.cliente = cliente;
@@ -27,7 +25,6 @@ public class Venda {
         this.catalogoVendedor = catalogoVendedor;
         this.itensVendidos = itensVendidos;
         this.tabelaVendedor = tabelaVendedor;
-        this.servicoReposicao = servicoReposicao;
     }
 
     public void adicionarItem(Produto produto, int quantidade) {
@@ -58,12 +55,9 @@ public class Venda {
         }
 
         System.out.println("finalizando a venda: " + getIdVenda());
-        System.out.println("\n\n--- CHECANDO ESTOQUE ---");
-
-        boolean precisaReposicao = false;
+        System.out.println("\n--- CHECANDO ESTOQUE ---");
 
         for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
-            
             ItemVenda item = this.itensVendidos.pegarBloco(i);
             Produto produtoVendido = item.getItem();
             int quantidadeVendida = item.getQuantidade();
@@ -71,40 +65,12 @@ public class Venda {
             int falta = this.catalogoVendedor.verificarFalta(produtoVendido, quantidadeVendida);
             
             if(falta > 0){
-                System.out.println(produtoVendido.getNome() + " em falta no catalogo. pedido de compra realizado!");
-                precisaReposicao = true;
-                break;
+                System.out.println("erro na venda, não tem os itens no catalogo!");
+                return false;
             } 
         }
 
-        if (precisaReposicao) {
-            System.out.println("\n--- pedido de reposição automática realizado ---");
-            boolean reposicaoSucesso = true;
-
-            for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
-            
-                ItemVenda item = this.itensVendidos.pegarBloco(i);
-                Produto produtoParaRepor = item.getItem();
-                int quantidadeVendida = item.getQuantidade();
-                int falta = this.catalogoVendedor.verificarFalta(produtoParaRepor, quantidadeVendida);
-            
-                this.servicoReposicao.comprardoProdutor(produtoParaRepor, (falta+5));
-
-                if(falta > 0){
-                    
-                    if(!this.servicoReposicao.comprardoProdutor(produtoParaRepor, (falta+5))){
-                        reposicaoSucesso = false;
-                        System.out.println("venda cancelada: não foi possível repor o catalogo do vendedor.");
-                        this.itensVendidos.limpaLista();
-                        return false;
-                    }                 
-                } 
-            }
-        }
-
-        else {
-            this.concluirAtendimento(catalogoVendedor);
-        }
+        this.concluirAtendimento(catalogoVendedor);
         
         gerarComprovante(formaPagamento);
         this.itensVendidos.limpaLista();

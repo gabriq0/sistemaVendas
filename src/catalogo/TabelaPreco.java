@@ -1,7 +1,6 @@
-package logistica;
+package catalogo;
 
 import listas.*;
-import catalogo.*;
 
 public class TabelaPreco {
     private Lista<ItemTabelaPreco> tabela = new Lista<ItemTabelaPreco>();

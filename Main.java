@@ -1,74 +1,43 @@
 import catalogo.*;
 import clientes.*;
 import listas.*;
-import logistica.*;
-import producao.*;
 import vendas.*;
 
 public class Main {
     public static void main(String[] args) {
         Sistema sistema = Sistema.getInstance();
-
-        EstoqueMaterial estoqueMaterial = sistema.getEstoqueMaterial();
-        Catalogo catalogoProdutor = sistema.getCatalogoProdutor();
+        
         Catalogo catalogoVendedor = sistema.getCatalogoVendedor();
         TabelaPreco tabelaVendedor = sistema.getTabelaVendedor();
+        
+        // 1. cria os produtos, define o preço na tabela.
+        Produto perfume = new Produto("perfume de banana", "p01");
+        Produto sabonete = new Produto("sabonete hahaha", "p02");
+        tabelaVendedor.definirPreco(perfume, 10.00);
+        tabelaVendedor.definirPreco(sabonete, 5.00);
 
-        ServicoProducao servicoProducao = sistema.getServicoProducao();
-        ServicoReposicao servicoReposicao = sistema.getServicoReposicao();
+        // 2. adiciona o produto no estoque, finja que o vendedor comprou ele ou algo do tipo.
+        catalogoVendedor.adicionarProduto(perfume, 20);
+        catalogoVendedor.adicionarProduto(sabonete, 5);
+        
+        System.out.println("estoque:\n" + catalogoVendedor);
+        System.out.println("=============================================================\n");
 
-        // 1. definindo a receita do produto, e então, criando ele:
-        Material alcool = new Material("i01", "álcool legal", "ml");
-        Material essencia = new Material("i02", "essência de lavanda", "ml");
-        
-        Receita receitaPerfume = new Receita();
-        receitaPerfume.adicionarIngredienteReceita(alcool, 70.0);
-        receitaPerfume.adicionarIngredienteReceita(essencia, 15.0);
+        // 3. venda.........................
+        Cliente cliente1 = new Cliente("gabri", "gabri@yahoo.com", "eeeeeeeee");
+        Lista<ItemVenda> carrinho1 = new Lista<ItemVenda>();
 
-        Produto perfumeLavanda = new Produto("perfume lavanda", "pr01", receitaPerfume);
+        Venda venda1 = new Venda(cliente1, catalogoVendedor, carrinho1, tabelaVendedor);
+        
+        venda1.adicionarItem(perfume, 2);
+        venda1.adicionarItem(sabonete, 3);
 
-        // 2. tentando criar um produto sem ter materiais para isso:
-        System.out.println("teste para checar se é possível criar um produto sem material suficiente: \n");
-        boolean teste = servicoProducao.produzir(perfumeLavanda, 5, 25);
-        
-        System.out.println("\nqtd de material em estoque: " + estoqueMaterial.getTamanhoEstoque());
+        boolean sucesso1 = venda1.finalizarVenda("dinheiro");
 
-        if (!teste) System.out.println("produção bloqueada por falta de material."); 
-        else System.out.println("falha, produto feito de literalmente nada");
-        System.out.println("\n=============================================================");
+        if(sucesso1) System.out.println("sucesso");
+        else System.out.println("falha");
         
-        // 3. tentando criar da maneira correta. com materiais suficientes:
-        estoqueMaterial.adicionarMaterial(alcool, 1000.0);
-        estoqueMaterial.adicionarMaterial(essencia, 500.0);
-        System.out.println(estoqueMaterial);
-
-        boolean correto = servicoProducao.produzir(perfumeLavanda, 10, 25);
-
-        if (correto) System.out.println("produto adicionado ao catalogo do produtor com sucesso!");
-        else System.out.println("falha, erro de código/lógica");
-        
-        System.out.println("\n=============================================================");
-        System.out.println("catalogo do produtor: \n" + catalogoProdutor);
-        
-        // 4. reposição do catalogo do VENDEDOR:
-        System.out.println("tentativa de reposição do catalogo do VENDEDOR: \n");
-        servicoReposicao.comprardoProdutor(perfumeLavanda, 4);
-        
-        System.out.println("estoque do produtor (deve ter 6 restantes): \n" + catalogoProdutor);
-        System.out.println("estoque do vendedor (deve ter 4): " + catalogoVendedor);
-        System.out.println("\n=============================================================");
-
-        // 5. venda do produto ao cliente: 
-        System.out.println("final: venda básica para algum cliente: ");
-        
-        Cliente cliente = new Cliente("gabriel", "gabri@yahoo.com", "beira do rio");
-        Lista<ItemVenda> carrinhoCompras = new Lista<ItemVenda>();
-        
-        Venda venda = new Venda(cliente, catalogoVendedor, carrinhoCompras, servicoReposicao, tabelaVendedor);
-        venda.adicionarItem(perfumeLavanda, 3);
-        venda.finalizarVenda("pix");
-        
-        System.out.println("\ndepois da venda: ");
-        System.out.println("catalogo do vendedor (deve ter 1 restante): \n" + catalogoVendedor);
+        System.out.println("\nchecando estoque pós venda:\n" + catalogoVendedor);
+        System.out.println("=============================================================\n");
     }
 }
