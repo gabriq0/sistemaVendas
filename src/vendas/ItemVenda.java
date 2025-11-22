@@ -1,5 +1,6 @@
 package vendas;
 import catalogo.*;
+import excecoes.QuantidadeInvalidaException;
 
 public class ItemVenda {
     private Produto item;
@@ -7,14 +8,18 @@ public class ItemVenda {
     private double precoVenda;
     private double subtotal;
 
-    public ItemVenda(Produto item, int quantidade, double precoVenda){
+    public ItemVenda(Produto item, int quantidade, double precoVenda) throws QuantidadeInvalidaException{
         this.item = item;
+        if(quantidade < 0) throw new QuantidadeInvalidaException(quantidade);
         this.quantidade = quantidade;
         this.precoVenda = precoVenda;
         this.subtotal = precoVenda * quantidade;
     }
 
-    public void setQuantidade(int quantidade){ this.quantidade = quantidade; }
+    public void setQuantidade(int quantidade) throws QuantidadeInvalidaException {
+        if(quantidade < 0 ) throw new QuantidadeInvalidaException(quantidade); 
+        this.quantidade = quantidade; 
+    }
     public double getPrecoVenda() { return precoVenda; }
     public Produto getItem() { return this.item; }
     public int getQuantidade() { return this.quantidade; }

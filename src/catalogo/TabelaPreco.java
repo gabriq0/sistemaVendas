@@ -1,5 +1,6 @@
 package catalogo;
 
+import excecoes.ProdutoSemPrecoException;
 import listas.*;
 
 public class TabelaPreco {
@@ -18,12 +19,12 @@ public class TabelaPreco {
         this.tabela.excluirItem(itemBusca);
     }
 
-    public Double getPreco(Produto produto) {
+    public Double getPreco(Produto produto) throws ProdutoSemPrecoException {
         ItemTabelaPreco itemBusca = new ItemTabelaPreco(produto, 0); 
         ItemTabelaPreco itemEncontrado = tabela.compararItens(itemBusca);
 
         if (itemEncontrado != null) return itemEncontrado.getPrecoProduto();
-        else return null;
+        else throw new ProdutoSemPrecoException(produto);
     }
 
     public void mostrarTabela(){

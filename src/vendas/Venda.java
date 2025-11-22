@@ -4,6 +4,10 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
+import excecoes.CarrinhoVazioException;
+import excecoes.EstoqueInsuficienteException;
+import excecoes.ProdutoSemPrecoException;
+import excecoes.QuantidadeInvalidaException;
 import listas.*;
 
 public class Venda {
@@ -27,15 +31,16 @@ public class Venda {
         this.tabelaVendedor = tabelaVendedor;
     }
 
-    public void adicionarItem(Produto produto, int quantidade) {
-        double precoVenda = this.tabelaVendedor.getPreco(produto);
-        ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
+    public void adicionarItem(Produto produto, int quantidade) throws ProdutoSemPrecoException, QuantidadeInvalidaException {
+            double precoVenda = this.tabelaVendedor.getPreco(produto);
+            ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
         
-        this.itensVendidos.insereFinal(item);
-        this.total += item.getSubtotal();
+            this.itensVendidos.insereFinal(item);
+            this.total += item.getSubtotal();
+
     }
 
-    public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir){
+    public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir) throws QuantidadeInvalidaException{
         ItemVenda auxiliar = new ItemVenda(produtoAlvo, 0, 0);
         ItemVenda itemExiste = this.itensVendidos.compararItens(auxiliar);
 
@@ -48,42 +53,15 @@ public class Venda {
         //isso é para caso seja necessário retirar um item da lista de compras. o equivalente de tirar um item do carrinho de compras.
     }
 
-    public boolean finalizarVenda(String formaPagamento){
-        if(this.itensVendidos.listaVazia()){
-            System.out.println("nenhum item! venda cancelada.");
-            return false;
-        }
-
-        System.out.println("finalizando a venda: " + getIdVenda());
-        System.out.println("\n--- CHECANDO ESTOQUE ---");
-
-        for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
-            ItemVenda item = this.itensVendidos.pegarBloco(i);
-            Produto produtoVendido = item.getItem();
-            int quantidadeVendida = item.getQuantidade();
-            
-            int falta = this.catalogoVendedor.verificarFalta(produtoVendido, quantidadeVendida);
-            
-            if(falta > 0){
-                System.out.println("erro na venda, não tem os itens no catalogo!");
-                return false;
-            } 
-        }
-
-        this.concluirAtendimento(catalogoVendedor);
+    public void finalizarVenda(String formaPagamento) throws EstoqueInsuficienteException, CarrinhoVazioException {
+        if(this.itensVendidos.listaVazia()) throw new CarrinhoVazioException();
         
+        for(int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
+            ItemVenda item = this.itensVendidos.pegarBloco(i);
+            this.catalogoVendedor.reduzirParaVenda(item.getItem(), item.getQuantidade());
+        }
         gerarComprovante(formaPagamento);
         this.itensVendidos.limpaLista();
-        return true;
-    }
-
-    public void concluirAtendimento(Catalogo catalogo) {
-        for (int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
-            ItemVenda item = this.itensVendidos.pegarBloco(i);
-            
-            catalogo.reduzirParaVenda(item.getItem(), item.getQuantidade()); 
-        }
-        //vai ser chamado para concluir as vendas pendentes.
     }
 
     public void gerarComprovante(String formaPagamento){
