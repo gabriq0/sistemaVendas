@@ -21,9 +21,9 @@ public class Main {
         try{
             venda1.adicionarItem(perfume, 25); 
         } catch(QuantidadeInvalidaException e){
-            e.getMessage();
+            System.out.println(e.getMessage());
         } catch(ProdutoSemPrecoException e){
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
 
         System.out.println("--- Tentando finalizar venda ---");
@@ -34,7 +34,7 @@ public class Main {
         } catch (EstoqueInsuficienteException e) {
             System.out.println("ERRO NA VENDA: " + e.getMessage());
         } catch (CarrinhoVazioException e){
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
     }
 }
