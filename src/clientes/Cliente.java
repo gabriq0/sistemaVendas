@@ -16,7 +16,7 @@ public class Cliente{
 
     @Override
     public String toString(){
-        return "nome: " + this.nome + " (" + this.email + ")\n" + "endereço: " + this.endereco + "\n";
+        return "nome: " + this.nome + " (" + this.email + "), " + "endereço: " + this.endereco;
     }
     
     @Override

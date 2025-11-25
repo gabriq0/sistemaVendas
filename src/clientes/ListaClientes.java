@@ -1,26 +1,33 @@
 package clientes;
 import listas.Lista;
 
-//minha intenção é melhorar a relação / uso da classe cliente no futuro...
-
 public class ListaClientes {
-    private Lista<Cliente> listadeClientes = new Lista<Cliente>();
+    private Lista<Cliente> listac = new Lista<Cliente>();
 
-    public void adicionarNovoCliente(String nome, String email, String endereco){
-        Cliente novoCliente = new Cliente(nome, email, endereco);
-        Cliente checarClienteRecorrente = this.listadeClientes.compararItens(novoCliente);
+    public Cliente adicionar(String nome, String email, String endereco){
+        Cliente busca = new Cliente(null, email, null);
+        Cliente existe = this.listac.compararItens(busca);
 
-        if(checarClienteRecorrente == null){
-            this.listadeClientes.insereFinal(novoCliente);
-        }
+        if(existe == null) {
+            Cliente novo = new Cliente(nome, email, endereco);
+            this.listac.insereFinal(novo);
+            return novo;
+        } 
+        else return existe;
+        
     }
 
-    public void removerClienteDaLista(String email){
+    public void remover(String email){
         Cliente clienteAlvo = new Cliente(null, email, null);
-        this.listadeClientes.excluirItem(clienteAlvo);
+        this.listac.excluirItem(clienteAlvo);
 
+    }
+
+    public void mostrarLista(){
+        if(this.listac.listaVazia()) System.out.println("lista de clientes vazia!!");
+        System.out.println(this.listac.toString());
     }
 
     @Override
-    public String toString() { return this.listadeClientes.toString(); }
+    public String toString() { return this.listac.toString(); }
 }

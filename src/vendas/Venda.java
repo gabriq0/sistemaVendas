@@ -4,10 +4,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
-import excecoes.CarrinhoVazioException;
-import excecoes.EstoqueInsuficienteException;
-import excecoes.ProdutoSemPrecoException;
-import excecoes.QuantidadeInvalidaException;
+import excecoes.*;
 import listas.*;
 
 public class Venda {
@@ -20,14 +17,13 @@ public class Venda {
     private Lista<ItemVenda> itensVendidos;
     private TabelaPreco tabelaVendedor;
 
-    public Venda(Cliente cliente, Catalogo catalogoVendedor, Lista<ItemVenda> itensVendidos, TabelaPreco tabelaVendedor){
+    public Venda(Cliente cliente, Catalogo catalogoVendedor, TabelaPreco tabelaVendedor){
         this.idVenda = "V-" + LocalDateTime.now();
         this.dataTransacao = getDataTransacao();
         this.cliente = cliente;
         this.itensVendidos = new Lista<ItemVenda>();
         this.total = 0.0;
         this.catalogoVendedor = catalogoVendedor;
-        this.itensVendidos = itensVendidos;
         this.tabelaVendedor = tabelaVendedor;
     }
 
@@ -92,19 +88,15 @@ public class Venda {
     }
 
 
-    public String getIdVenda(){
-        return this.idVenda;
-    }
+    public String getIdVenda(){ return this.idVenda; }
+    
     public String getDataTransacao(){
         LocalDateTime horadeVenda = LocalDateTime.now();
         DateTimeFormatter estiloBrasil = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yy");
         dataTransacao = horadeVenda.format(estiloBrasil);
         return dataTransacao; //essa formatação está aí, pois o formato original é bem estranho/confuso.
     }
-    public String getFormaPagamento(){
-        return formaPagamento;
-    }
-    public double getTotal(){
-        return this.total;
-    }
+    
+    public String getFormaPagamento(){ return formaPagamento; }
+    public double getTotal(){ return this.total; }
 }
