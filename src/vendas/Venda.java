@@ -4,7 +4,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import catalogo.*;
 import clientes.*;
-import excecoes.*;
 import listas.*;
 
 public class Venda {
@@ -27,7 +26,12 @@ public class Venda {
         this.tabelaVendedor = tabelaVendedor;
     }
 
-    public void adicionarItem(Produto produto, int quantidade) throws ProdutoSemPrecoException, QuantidadeInvalidaException {
+    public void adicionarItem(Produto produto, int quantidade){
+            if(!this.tabelaVendedor.isVigente()){
+                System.out.println("erro: a tabela que se refere a este item está vencida.");
+                return; // sim isso poderia ser uma excessão...
+            }
+
             double precoVenda = this.tabelaVendedor.getPreco(produto);
             ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
         
@@ -36,7 +40,7 @@ public class Venda {
 
     }
 
-    public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir) throws QuantidadeInvalidaException{
+    public void retirarItem(Produto produtoAlvo, int quantidadeParaReduzir){
         ItemVenda auxiliar = new ItemVenda(produtoAlvo, 0, 0);
         ItemVenda itemExiste = this.itensVendidos.compararItens(auxiliar);
 
@@ -49,8 +53,11 @@ public class Venda {
         //isso é para caso seja necessário retirar um item da lista de compras. o equivalente de tirar um item do carrinho de compras.
     }
 
-    public void finalizarVenda(String formaPagamento) throws EstoqueInsuficienteException, CarrinhoVazioException {
-        if(this.itensVendidos.listaVazia()) throw new CarrinhoVazioException();
+    public boolean finalizarVenda(String formaPagamento) {
+        if(this.itensVendidos.listaVazia()){
+            System.out.println("nenhum item! venda cancelada.");
+            return false;
+        }
         
         for(int i = 0; i < this.itensVendidos.tamanhoLista(); i++) {
             ItemVenda item = this.itensVendidos.pegarBloco(i);
@@ -58,6 +65,7 @@ public class Venda {
         }
         gerarComprovante(formaPagamento);
         this.itensVendidos.limpaLista();
+        return true;
     }
 
     public void gerarComprovante(String formaPagamento){

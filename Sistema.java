@@ -1,18 +1,15 @@
 import catalogo.Catalogo;
-import catalogo.TabelaPreco;
 import clientes.ListaClientes;
 
 public class Sistema {
     private static Sistema instancia1;
 
     //todas as instâncias necessárias para o funcionamento do sistema:
-    private final Catalogo catalogo;
-    private final TabelaPreco tabelaPreco;
-    private final ListaClientes listaClientes;
+    private Catalogo catalogo;
+    private ListaClientes listaClientes;
 
     private Sistema(){
         catalogo = new Catalogo();
-        tabelaPreco = new TabelaPreco();
         listaClientes = new ListaClientes();
     }
 
@@ -21,7 +18,6 @@ public class Sistema {
         return instancia1;
     }
 
-    public Catalogo getCatalogoVendedor() { return catalogo; }
-    public TabelaPreco getTabelaVendedor() { return tabelaPreco; }
+    public Catalogo getCatalogo() { return catalogo; }
     public ListaClientes getListaClientes() { return listaClientes; }
 }

@@ -1,5 +1,4 @@
 package catalogo;
-import excecoes.EstoqueInsuficienteException;
 import listas.Lista;
 
 public class Catalogo {
@@ -55,10 +54,9 @@ public class Catalogo {
         //esse método é para apenas retirar uma quantidade desejada de um item no estoque.
     }
 
-    public void reduzirParaVenda(Produto produtoAlvo, int quantidadeParaReduzir) throws EstoqueInsuficienteException{
+    public boolean reduzirParaVenda(Produto produtoAlvo, int quantidadeParaReduzir){
         int falta = verificarFalta(produtoAlvo, quantidadeParaReduzir);
-        if(falta > 0) throw new EstoqueInsuficienteException(produtoAlvo, falta); 
-        //se o item está faltando não dá pra reduzir.
+        if(falta > 0) return false; //se o item está faltando não dá pra reduzir.
 
         ItemEstoque auxiliar = new ItemEstoque(produtoAlvo, 0);
         ItemEstoque itemExiste = this.catalogo.compararItens(auxiliar);
@@ -66,7 +64,9 @@ public class Catalogo {
         if (itemExiste != null) {
             int quantidadeAnterior = itemExiste.getQuantidadeEstoque();
             itemExiste.setQuantidadeEstoque(quantidadeAnterior - quantidadeParaReduzir);
+            return true;
         }
+        return false;
     }
 
     public int verificarFalta(Produto produtoAlvo, int quantidadeDesejada){

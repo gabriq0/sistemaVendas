@@ -1,7 +1,8 @@
+import java.time.LocalDate;
+
 import catalogo.*;
 import clientes.*;
 import vendas.*;
-import excecoes.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,21 +10,22 @@ public class Main {
 
         // 1. iniciando o sistema
         Sistema sistema = Sistema.getInstance();
-        Catalogo catalogo = sistema.getCatalogoVendedor();
-        TabelaPreco tabela = sistema.getTabelaVendedor();
+        Catalogo catalogo = sistema.getCatalogo();
         ListaClientes listaClientes = sistema.getListaClientes();
+        TabelaPreco tabela = new TabelaPreco();
+
+        // agora a tabela tem uma vigência! uau eba! o_O
+        tabela.definirVigencia(LocalDate.of(2025, 04, 23),LocalDate.of(2027, 12,31));
 
         // 2. produtos no catalogo + preços na TABELA DE PREÇOS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         System.out.println("--- 1. cadastro dos produtos: ---");
         Produto p1 = new Produto("perfume lavanda", "P001");
         Produto p2 = new Produto("creme do mal", "P002");
         Produto p3 = new Produto("batom secreto", "P003");
-        Produto pSemPreco = new Produto("coisa", "P004");
 
         catalogo.adicionarProduto(p1, 50); 
         catalogo.adicionarProduto(p2, 20); 
         catalogo.adicionarProduto(p3, 5);  
-        catalogo.adicionarProduto(pSemPreco, 10);
 
         tabela.definirPreco(p1, 150.00);
         tabela.definirPreco(p2, 45.50);
@@ -49,55 +51,35 @@ public class Main {
         System.out.println("--- 3. realizando venda com sucesso: ---");
         Venda venda1 = new Venda(cliente, catalogo, tabela);
 
-        try {
-            venda1.adicionarItem(p1, 2);
-            venda1.adicionarItem(p2, 1);
-            venda1.finalizarVenda("dinheiro");
-            System.out.println(">> venda finalizada!");
-        } catch (Exception e) {
-            System.out.println("erro inesperado: " + e.getMessage());
-        }
-
+        venda1.adicionarItem(p1, 2);
+        venda1.adicionarItem(p2, 1);
+        venda1.finalizarVenda("dinheiro");
+        
         System.out.println("\ncatalogo pós-venda:");
         catalogo.mostrarCatalogo();
 
         System.out.println("===========================================================\n");
 
-        System.out.println("--- 4. teste para excessões: ---");
+        System.out.println("--- 4. testando erro com a vigência: ---");
         
-        // 5.1 testando uma venda de produto sem preço:
-        System.out.println("\n[4.1] tentar vender produto sem preço:");
-        Venda vendaErro1 = new Venda(cliente, catalogo, tabela);
-        try {
-            vendaErro1.adicionarItem(pSemPreco, 1);
-        } catch (ProdutoSemPrecoException e) {
-            System.out.println("sucesso!: erro -> " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("outro erro (não deveria acontecer): " + e.getMessage());
-        }
+        TabelaPreco tabela2 = new TabelaPreco(); //esse período já passou alguns anos, ou seja, vencida...
+        tabela2.definirVigencia(LocalDate.of(2006, 04, 23),LocalDate.of(2010, 12,31));
+        
+        //mesmos preços:
+        tabela2.definirPreco(p1, 150.00);
+        tabela2.definirPreco(p2, 45.50);
+        tabela2.definirPreco(p3, 30.00);
 
-        // 5.2 testando comprar mais do que o estoque
-        System.out.println("\n[4.2] tentar vender mais do que tem:");
-        Venda vendaErro2 = new Venda(cliente, catalogo, tabela);
-        try {
-            vendaErro2.adicionarItem(p3, 10);
-            vendaErro2.finalizarVenda("dinheiro");
-        } catch (EstoqueInsuficienteException e) {
-            System.out.println("sucesso!: erro -> " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("outro erro (não deveria acontecer): " + e.getMessage());
-        }
+        Venda venda2 = new Venda(cliente, catalogo, tabela2);
 
-        // 5.3 qtd invalidada de itens no carrinho
-        System.out.println("\n[4.3] tentar adicionar qtd negativa:");
-        try {
-            vendaErro2.adicionarItem(p1, -5);
-        } catch (QuantidadeInvalidaException e) {
-            System.out.println("sucesso!: erro -> " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("outro erro (não deveria acontecer): " + e.getMessage());
-        }
+        venda2.adicionarItem(p1, 10);
+        venda2.adicionarItem(p2, 7);
+        venda2.finalizarVenda("dinheiro");
 
-        System.out.println("\n=== fim!!!!!! ===");
+        System.out.println("\ncatalogo pós-venda:");
+        catalogo.mostrarCatalogo();
+
+        System.out.println("=== fim!!!!!! ===");
+
     }
 }
