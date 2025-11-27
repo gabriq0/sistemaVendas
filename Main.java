@@ -48,6 +48,18 @@ public class Main {
         System.out.println("\ncatalogo pós-venda:");
         sistema.getCatalogo().mostrarCatalogo();
 
+        System.out.println("--- 4. outra venda!: ---");
+
+        sistema.iniciarVenda("luigi@yahoo.com");
+        sistema.addItemVenda("P001", 10);
+        sistema.addItemVenda("P002", 2);
+        sistema.addItemVenda("P003", 2);
+        sistema.addItemVenda("P001", 10);
+        sistema.fecharVenda("cartão de crédito");
+
+        System.out.println("\ncatalogo pós-venda:");
+        sistema.getCatalogo().mostrarCatalogo();
+
         System.out.println("=== fim!!!!!! ===");
 
     }
