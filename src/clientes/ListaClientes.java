@@ -23,6 +23,14 @@ public class ListaClientes {
 
     }
 
+    public Cliente buscar(String email){
+        Cliente busca = new Cliente(null, email, null);
+        Cliente existe = this.listac.compararItens(busca);
+
+        if(existe != null) return existe;
+        return null;
+    }
+
     public void mostrarLista(){
         if(this.listac.listaVazia()) System.out.println("lista de clientes vazia!!");
         System.out.println(this.listac.toString());

@@ -83,6 +83,16 @@ public class Catalogo {
         return quantidadeDesejada; //se o item não existe, falta tudo. 
     }
 
+    public Produto buscaProduto(String id){
+        for(int i=0; i < this.catalogo.tamanhoLista(); i++){
+            ItemEstoque ie = this.catalogo.pegarBloco(i);
+            Produto p = ie.getProduto();
+            
+            if(p.getIdProduto().equals(id)) return p;
+        }
+        return null;
+    }
+
     public int getTamanhoCatalogo() { return this.catalogo.tamanhoLista(); }
 
     @Override
